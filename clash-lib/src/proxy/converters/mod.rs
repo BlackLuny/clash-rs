@@ -15,3 +15,6 @@ mod utils;
 pub mod vmess;
 #[cfg(feature = "wireguard")]
 pub mod wireguard;
+
+#[cfg(feature = "private_tun")]
+pub mod private_tun;

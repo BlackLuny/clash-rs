@@ -53,6 +53,9 @@ pub mod vmess;
 #[cfg(feature = "wireguard")]
 pub mod wg;
 
+#[cfg(feature = "private_tun")]
+pub mod private_tun;
+
 pub mod group;
 pub use group::{fallback, loadbalance, relay, selector, urltest};
 
@@ -116,6 +119,7 @@ pub type AnyOutboundDatagram =
 #[derive(Serialize, Deserialize)]
 pub enum OutboundType {
     Shadowsocks,
+    PrivateTun,
     Vmess,
     Trojan,
     WireGuard,
@@ -142,6 +146,7 @@ impl Display for OutboundType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             OutboundType::Shadowsocks => write!(f, "Shadowsocks"),
+            OutboundType::PrivateTun => write!(f, "PrivateTun"),
             OutboundType::Vmess => write!(f, "Vmess"),
             OutboundType::Trojan => write!(f, "Trojan"),
             OutboundType::WireGuard => write!(f, "WireGuard"),

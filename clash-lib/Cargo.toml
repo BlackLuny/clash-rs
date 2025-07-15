@@ -5,7 +5,7 @@ version = { workspace = true }
 edition = { workspace = true }
 
 [features]
-default = ["zero_copy", "aws-lc-rs"]
+default = ["zero_copy", "aws-lc-rs", "private_tun"]
 
 aws-lc-rs = [
     "rustls/aws-lc-rs",
@@ -35,6 +35,8 @@ tun = [
     "dep:netstack-smoltcp",
     "dep:smoltcp",
 ]
+
+private_tun = ["dep:private_tun", "dep:async-ringbuf"]
 
 zero_copy = []
 bench = ["dep:criterion"]
@@ -174,6 +176,10 @@ totp-rs = { version = "^5.7", features = ["serde_support"], optional = true }
 
 # shadowquic
 shadowquic = { version = "=0.2.0", optional = true, git = "https://github.com/spongebob888/shadowquic" }
+
+# private_tun
+private_tun = { path = "../../private_tun", optional = true }
+async-ringbuf = {version ="0.3", default-features=false, optional = true}
 
 # experimental
 downcast-rs = "2.0"

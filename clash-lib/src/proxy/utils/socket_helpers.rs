@@ -92,28 +92,28 @@ pub async fn new_udp_socket(
     // - Otherwise, default to IPv4 socket
     #[allow(unused_variables)]
     let (socket, family) = match (src, iface) {
-        (_, Some(iface)) if iface.addr_v6.is_some() => {
-            debug!("resolved v6 socket for v6 iface {:?}", iface.addr_v6);
-            (
-                socket2::Socket::new(
-                    socket2::Domain::IPV6,
-                    socket2::Type::DGRAM,
-                    None,
-                )?,
-                socket2::Domain::IPV6,
-            )
-        }
-        (Some(src), _) if src.is_ipv6() => {
-            debug!("resolved v6 socket for v6 src {src:?}");
-            (
-                socket2::Socket::new(
-                    socket2::Domain::IPV6,
-                    socket2::Type::DGRAM,
-                    None,
-                )?,
-                socket2::Domain::IPV6,
-            )
-        }
+        // (_, Some(iface)) if iface.addr_v6.is_some() => {
+        //     debug!("resolved v6 socket for v6 iface {:?}", iface.addr_v6);
+        //     (
+        //         socket2::Socket::new(
+        //             socket2::Domain::IPV6,
+        //             socket2::Type::DGRAM,
+        //             None,
+        //         )?,
+        //         socket2::Domain::IPV6,
+        //     )
+        // }
+        // (Some(src), _) if src.is_ipv6() => {
+        //     debug!("resolved v6 socket for v6 src {src:?}");
+        //     (
+        //         socket2::Socket::new(
+        //             socket2::Domain::IPV6,
+        //             socket2::Type::DGRAM,
+        //             None,
+        //         )?,
+        //         socket2::Domain::IPV6,
+        //     )
+        // }
         _ => {
             debug!("defaulting to v4 socket");
             (

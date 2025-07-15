@@ -8,7 +8,7 @@ authors = { workspace = true }
 
 [features]
 default = ["standard", "aws-lc-rs"]
-standard = ["shadowsocks", "tuic", "ssh", "shadowquic", "wireguard", "clash-lib/zero_copy", "tproxy", "tun"]
+standard = ["shadowsocks", "tuic", "ssh", "shadowquic", "wireguard", "clash-lib/zero_copy", "tproxy", "tun", "clash-lib/private_tun"]
 
 plus = ["standard", "onion"]
 perf = ["plus", "jemallocator"]

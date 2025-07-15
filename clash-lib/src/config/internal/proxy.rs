@@ -56,6 +56,9 @@ pub enum OutboundProxyProtocol {
     #[cfg(feature = "shadowsocks")]
     #[serde(rename = "ss")]
     Ss(OutboundShadowsocks),
+    #[cfg(feature = "private_tun")]
+    #[serde(rename = "hammer")]
+    Hammer(OutboundPrivateTun),
     #[serde(rename = "socks5")]
     Socks5(OutboundSocks5),
     #[serde(rename = "trojan")]
@@ -88,6 +91,8 @@ impl OutboundProxyProtocol {
             OutboundProxyProtocol::Reject => PROXY_REJECT,
             #[cfg(feature = "shadowsocks")]
             OutboundProxyProtocol::Ss(ss) => &ss.common_opts.name,
+            #[cfg(feature = "private_tun")]
+            OutboundProxyProtocol::Hammer(hammer) => &hammer.common_opts.name,
             OutboundProxyProtocol::Socks5(socks5) => &socks5.common_opts.name,
             OutboundProxyProtocol::Trojan(trojan) => &trojan.common_opts.name,
             OutboundProxyProtocol::Vmess(vmess) => &vmess.common_opts.name,
@@ -129,6 +134,8 @@ impl Display for OutboundProxyProtocol {
         match self {
             #[cfg(feature = "shadowsocks")]
             OutboundProxyProtocol::Ss(_) => write!(f, "Shadowsocks"),
+            #[cfg(feature = "private_tun")]
+            OutboundProxyProtocol::Hammer(_) => write!(f, "Hammer"),
             OutboundProxyProtocol::Socks5(_) => write!(f, "Socks5"),
             OutboundProxyProtocol::Direct => write!(f, "{PROXY_DIRECT}"),
             OutboundProxyProtocol::Reject => write!(f, "{PROXY_REJECT}"),
@@ -174,6 +181,18 @@ pub struct OutboundShadowsocks {
     pub udp: bool,
     pub plugin: Option<String>,
     pub plugin_opts: Option<HashMap<String, serde_yaml::Value>>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Default)]
+#[serde(rename_all = "kebab-case")]
+pub struct OutboundPrivateTun {
+    #[serde(flatten)]
+    pub common_opts: CommonConfigOptions,
+    #[serde(default = "default_bool_true")]
+    pub udp: bool,
+    pub uot: bool,
+    #[cfg(feature = "private_tun")]
+    pub origin_client_config: private_tun::snell_impl_ver::config::ClientConfig,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Default)]

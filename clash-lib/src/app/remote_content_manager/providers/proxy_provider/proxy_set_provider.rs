@@ -10,6 +10,8 @@ use tracing::debug;
 use super::ProxyProvider;
 #[cfg(feature = "shadowsocks")]
 use crate::proxy::shadowsocks;
+#[cfg(feature = "private_tun")]
+use crate::proxy::private_tun;
 #[cfg(feature = "ssh")]
 use crate::proxy::ssh;
 #[cfg(feature = "onion")]
@@ -127,6 +129,12 @@ impl ProxySetProvider {
                                 OutboundProxyProtocol::Ss(s) => {
                                     let h: shadowsocks::outbound::Handler =
                                         s.try_into()?;
+                                    Ok(Arc::new(h) as _)
+                                }
+                                #[cfg(feature = "private_tun")]
+                                OutboundProxyProtocol::Hammer(h) => {
+                                    let h: private_tun::outbound::Handler =
+                                        h.try_into()?;
                                     Ok(Arc::new(h) as _)
                                 }
                                 OutboundProxyProtocol::Socks5(s) => {

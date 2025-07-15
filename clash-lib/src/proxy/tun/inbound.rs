@@ -288,6 +288,9 @@ pub fn get_runner(
         }
     };
 
+    let tun_name = tun_init_config.tun_name.expect("tun name must be provided");
+    
+
     let tun = if let Some(fd) = tun_init_config.fd {
         #[cfg(target_family = "unix")]
         {
@@ -304,13 +307,9 @@ pub fn get_runner(
     } else {
         #[cfg(not(any(target_os = "ios", target_os = "android")))]
         {
-            use crate::proxy::tun::routes::maybe_add_routes;
+            
             use tun_rs::DeviceBuilder;
-
-            let tun_name =
-                tun_init_config.tun_name.expect("tun name must be provided");
             info!("tun started at {}", &tun_name);
-
             let mut tun_builder = DeviceBuilder::new()
                 .name(&tun_name)
                 .mtu(cfg.mtu.unwrap_or(if cfg!(windows) {
@@ -332,8 +331,6 @@ pub fn get_runner(
                 }
             }
 
-            maybe_add_routes(&cfg, &tun_name)?;
-
             tun_builder.build_async()?
         }
         #[cfg(any(target_os = "ios", target_os = "android"))]
@@ -343,6 +340,8 @@ pub fn get_runner(
             ));
         }
     };
+    use crate::proxy::tun::routes::maybe_add_routes;
+    maybe_add_routes(&cfg, &tun_name)?;
 
     let mut builder = StackBuilder::default()
         .enable_tcp(true)

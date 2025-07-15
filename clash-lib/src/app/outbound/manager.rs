@@ -3,6 +3,8 @@ use super::utils::proxy_groups_dag_sort;
 use crate::proxy::shadowquic;
 #[cfg(feature = "shadowsocks")]
 use crate::proxy::shadowsocks;
+#[cfg(feature = "private_tun")]
+use crate::proxy::private_tun;
 #[cfg(feature = "ssh")]
 use crate::proxy::ssh;
 #[cfg(feature = "onion")]
@@ -249,6 +251,21 @@ impl OutboundManager {
                         .inspect_err(|e| {
                             error!(
                                 "failed to load shadowsocks outbound {}: {}",
+                                name, e
+                            );
+                        })
+                        .ok()
+                }
+                #[cfg(feature = "private_tun")]
+                OutboundProxyProtocol::Hammer(h) => {
+                    let name = h.common_opts.name.clone();
+                    h.try_into()
+                        .map(|x: private_tun::outbound::Handler| {
+                            Arc::new(x) as AnyOutboundHandler
+                        })
+                        .inspect_err(|e| {
+                            error!(
+                                "failed to load private tun outbound {}: {}",
                                 name, e
                             );
                         })
